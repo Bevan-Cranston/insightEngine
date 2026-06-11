@@ -4,11 +4,28 @@ A conversational system for personalized insight extraction and development buil
 
 ## Project Roadmap
 
+### V1 - MVP
+
 - [ ] FastAPI server
 - [ ] OpenAI integration
-- [ ] Client side HTML interface with Javascript
-- [ ] MongoDB chat and message storage
+- [ ] HTML interface
+- [ ] MongoDB schema design
+- [ ] MongoDB storage
+
+### V2 - Retrieval
+
 - [ ] Tag extraction
 - [ ] Retrieval based on tags 
 - [ ] Retrieval on semantic similarity
+
+### Testing and Research
+
 - [ ] Tag structure development
+
+```text
+Phone Browser
+      ↓
+   FastAPI
+   ↙     ↘
+OpenAI   MongoDB
+```
