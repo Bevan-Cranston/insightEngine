@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Insight Engine</title>
+</head>
+<body>
+    <h1>Insight Engine</h1>
+
+    <textarea id="message" rows="8" cols="50"
+        placeholder="What are you reflecting on?"></textarea>
+    <br>
+
+    <button onclick="sendMessage()">Send</button>
+
+    <h2>Response</h2>
+    <div id="response"></div>
+
+    <script>
+        async function sendMessage() {
+            const message = document.getElementById("message").value;
+            const responseDiv = document.getElementById("response");
+
+            responseDiv.innerText = "Thinking...";
+
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            responseDiv.innerText = data.reply;
+        }
+    </script>
+</body>
+</html>

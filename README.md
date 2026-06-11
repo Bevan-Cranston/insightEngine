@@ -6,9 +6,9 @@ A conversational system for personalized insight extraction and development buil
 
 ### V1 - MVP
 
-- [ ] FastAPI server
-- [ ] OpenAI integration
-- [ ] HTML interface
+- [x] FastAPI server
+- [x] OpenAI integration
+- [x] HTML interface
 - [ ] MongoDB schema design
 - [ ] MongoDB storage
 
@@ -20,7 +20,9 @@ A conversational system for personalized insight extraction and development buil
 
 ### Testing and Research
 
+- [ ] System message development
 - [ ] Tag structure development
+- [ ] Retrieval injection methodology
 
 ```text
 Phone Browser
