@@ -1,0 +1,11 @@
+{
+  "_id": "...",
+  "conversation_id": "...",
+  "role": "user",
+  "content": "...",
+  "created_at": "...",
+  "model": null,
+  "system_prompt_version": null,
+  "tags": [],
+  "embedding": null
+}

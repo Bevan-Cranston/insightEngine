@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -7,9 +8,12 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from openai import OpenAI
 
+from app.db import InsightEngineDB
+
 
 class ChatRequest(BaseModel):
     message: str
+    conversation_id: Optional[str] = None
 
 
 class InsightEngineServer:
@@ -18,7 +22,12 @@ class InsightEngineServer:
 
         self.app = FastAPI(title="Insight Engine")
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.db = InsightEngineDB()
+
         self.base_dir = Path(__file__).resolve().parent
+        self.model = "gpt-5-mini"
+        self.system_prompt_version = "v1"
+
         self.system_prompt = (
             "You are Insight Engine, a reflective thought partner. "
             "Help the user explore their thoughts clearly and generate useful insight. "
@@ -42,8 +51,28 @@ class InsightEngineServer:
                     {"role": "user", "content": request.message},
                 ],
             )
+            reply = response.output_text
 
-            return {"reply": response.output_text}
+            conversation_id = self.db.save_chat_turn(
+                conversation_id=request.conversation_id,
+                user_message=request.message,
+                assistant_message=reply,
+                model=self.model,
+                system_prompt_version=self.system_prompt_version,
+            )
+
+            return {
+                "reply": reply,
+                "conversation_id": conversation_id,
+            }
+
+        @app.get("/conversations")
+        def get_conversations():
+            return self.db.get_conversations()
+
+        @app.post("/conversations")
+        def create_conversation():
+            return self.db.create_next_conversation()
 
 
 server = InsightEngineServer()
