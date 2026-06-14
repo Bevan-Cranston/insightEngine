@@ -45,7 +45,7 @@ class InsightEngineServer:
         @self.app.post("/chat")
         def chat(request: ChatRequest):
             response = self.client.responses.create(
-                model="gpt-5-mini",
+                model=self.model,
                 input=[
                     {"role": "system", "content": self.system_prompt},
                     {"role": "user", "content": request.message},
@@ -66,13 +66,21 @@ class InsightEngineServer:
                 "conversation_id": conversation_id,
             }
 
-        @app.get("/conversations")
+        @self.app.get("/conversations")
         def get_conversations():
             return self.db.get_conversations()
 
-        @app.post("/conversations")
+        @self.app.post("/conversations")
         def create_conversation():
-            return self.db.create_next_conversation()
+            next_conversation = self.db.create_next_conversation()
+            return {
+                "conversation_id": next_conversation['conversation_id'],
+                "conversation_title": next_conversation['conversation_title']
+            }
+
+        @self.app.get("/conversations/{conversation_id}/messages")
+        def get_conversation_messages(conversation_id: str):
+            return self.db.get_messages_for_conversation(conversation_id)
 
 
 server = InsightEngineServer()

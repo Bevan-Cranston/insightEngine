@@ -34,6 +34,8 @@ class InsightEngineDB:
         self.conversations = self.db["conversations"]
         self.messages = self.db["messages"]
         self.schemas = SchemaLoader()
+        self.messages.delete_many({})
+        self.conversations.delete_many({})
 
     def create_conversation(self, title="New Chat"):
         now = utc_now()
@@ -44,7 +46,7 @@ class InsightEngineDB:
         conversation["updated_at"] = now
 
         result = self.conversations.insert_one(conversation)
-        return str(result.inserted_id)
+        return {"conversation_id": str(result.inserted_id), "conversation_title": title}
 
     def create_next_conversation(self):
         count = self.conversations.count_documents({})
@@ -87,7 +89,7 @@ class InsightEngineDB:
         system_prompt_version,
     ):
         if conversation_id is None:
-            conversation_id = self.create_conversation(title="New Chat")
+            conversation_id = self.create_next_conversation()["conversation_id"]
 
         self.create_message(
             conversation_id=conversation_id,
@@ -109,6 +111,18 @@ class InsightEngineDB:
         )
 
         return conversation_id
+
+    def get_messages_for_conversation(self, conversation_id):
+        return [
+            {
+                "role": msg["role"],
+                "content": msg["content"],
+                "created_at": msg["created_at"]
+            }
+            for msg in self.messages.find(
+                {"conversation_id": conversation_id}
+            ).sort("created_at", 1)
+        ]
 
     def _to_object_id(self, id_string):
         from bson import ObjectId

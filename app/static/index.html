@@ -3,8 +3,19 @@
 <head>
     <title>Insight Engine</title>
 </head>
-<body>
+<body onload="loadConversations()">
+
     <h1>Insight Engine</h1>
+
+    <h2>Conversations</h2>
+    <button onclick="createNewConversation()">New Chat</button>
+    <div id="conversation-list"></div>
+
+    <h2>Current Chat</h2>
+    <div id="current-chat">No chat selected</div>
+
+    <h2>Messages</h2>
+    <div id="messages"></div>
 
     <textarea id="message" rows="8" cols="50"
         placeholder="What are you reflecting on?"></textarea>
@@ -16,6 +27,8 @@
     <div id="response"></div>
 
     <script>
+        let currentConversationId = null;
+
         async function sendMessage() {
             const message = document.getElementById("message").value;
             const responseDiv = document.getElementById("response");
@@ -27,12 +40,84 @@
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ message: message })
+                body: JSON.stringify({
+                    message: message,
+                    conversation_id: currentConversationId
+                })
             });
 
             const data = await response.json();
+
+            currentConversationId = data.conversation_id;
             responseDiv.innerText = data.reply;
+
+            await loadConversations();
+            document.getElementById("message").value = "";
         }
+
+        async function createNewConversation() {
+            const response = await fetch("/conversations", {
+                method: "POST"
+            });
+
+            const data = await response.json();
+            currentConversationId = data.conversation_id;
+
+            await loadConversations();
+            document.getElementById("current-chat").innerText =
+                data.conversation_title;
+            document.getElementById("response").innerText = "";
+            document.getElementById("message").value = "";
+        }
+
+        async function loadConversations() {
+            const response = await fetch("/conversations");
+            const conversations = await response.json();
+
+            const list = document.getElementById("conversation-list");
+            list.innerHTML = "";
+
+            conversations.forEach(convo => {
+                const button = document.createElement("button");
+                button.innerText = convo.title;
+
+                button.onclick = async () => {
+                    currentConversationId = convo.id;
+                    document.getElementById("current-chat").innerText = convo.title;
+                    document.getElementById("response").innerText = "";
+                    document.getElementById("message").value = "";
+
+                    await loadMessages(convo.id);
+                };
+
+                list.appendChild(button);
+                list.appendChild(document.createElement("br"));
+            });
+        }
+
+        async function loadMessages(conversationId) {
+            const response = await fetch(
+                `/conversations/${conversationId}/messages`
+            );
+
+            const messages = await response.json();
+            const messagesDiv = document.getElementById("messages");
+
+            messagesDiv.innerHTML = "";
+
+            if (messages.length === 0) {
+                messagesDiv.innerText = "No messages yet.";
+                return;
+            }
+
+            messages.forEach(msg => {
+                const messageBlock = document.createElement("div");
+                messageBlock.innerText = `${msg.role}: ${msg.content}`;
+                messagesDiv.appendChild(messageBlock);
+                messagesDiv.appendChild(document.createElement("br"));
+            });
+        }
+
     </script>
 </body>
 </html>

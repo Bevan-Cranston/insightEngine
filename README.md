@@ -2,6 +2,9 @@
 
 A conversational system for personalized insight extraction and development built on a FastAPI server using OpenAI API with MongoDB backend storage.
 
+Note: to start server, run the following command in root:
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
 ## Project Roadmap
 
 ### V1 - MVP
