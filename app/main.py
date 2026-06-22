@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from openai import OpenAI
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage
 
 from app.db import InsightEngineDB
 
@@ -21,11 +22,11 @@ class InsightEngineServer:
         load_dotenv()
 
         self.app = FastAPI(title="Insight Engine")
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.model = "gpt-5-mini"
+        self.llm = ChatOpenAI(model=self.model, temperature=0.7, api_key=os.getenv("OPENAI_API_KEY"))
         self.db = InsightEngineDB()
 
         self.base_dir = Path(__file__).resolve().parent
-        self.model = "gpt-5-mini"
         self.system_prompt_version = "v1"
 
         self.system_prompt = (
@@ -44,14 +45,12 @@ class InsightEngineServer:
 
         @self.app.post("/chat")
         def chat(request: ChatRequest):
-            response = self.client.responses.create(
-                model=self.model,
-                input=[
-                    {"role": "system", "content": self.system_prompt},
-                    {"role": "user", "content": request.message},
-                ],
-            )
-            reply = response.output_text
+            response = self.llm.invoke([
+                SystemMessage(content=self.system_prompt),
+                HumanMessage(content=request.message),
+            ])
+
+            reply = response.content
 
             conversation_id = self.db.save_chat_turn(
                 conversation_id=request.conversation_id,

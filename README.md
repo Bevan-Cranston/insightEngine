@@ -12,8 +12,8 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - [x] FastAPI server
 - [x] OpenAI integration
 - [x] HTML interface
-- [ ] MongoDB schema design
-- [ ] MongoDB storage
+- [x] MongoDB schema design
+- [x] MongoDB storage
 
 ### V2 - Retrieval
 

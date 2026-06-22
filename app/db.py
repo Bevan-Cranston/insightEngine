@@ -34,8 +34,6 @@ class InsightEngineDB:
         self.conversations = self.db["conversations"]
         self.messages = self.db["messages"]
         self.schemas = SchemaLoader()
-        self.messages.delete_many({})
-        self.conversations.delete_many({})
 
     def create_conversation(self, title="New Chat"):
         now = utc_now()
