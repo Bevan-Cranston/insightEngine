@@ -122,6 +122,10 @@ class InsightEngineDB:
             ).sort("created_at", 1)
         ]
 
+    def get_recent_messages(self, conversation_id, limit=20):
+        messages = self.get_messages_for_conversation(conversation_id)
+        return messages[-limit:]
+
     def _to_object_id(self, id_string):
         from bson import ObjectId
         return ObjectId(id_string)

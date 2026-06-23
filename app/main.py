@@ -1,13 +1,14 @@
 import os
 from pathlib import Path
 from typing import Optional
-
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from langchain_core.chat_history import InMemoryChatMessageHistory
+
 
 from app.db import InsightEngineDB
 
@@ -37,6 +38,9 @@ class InsightEngineServer:
 
         self._register_routes()
 
+        self.histories = {}
+        self.memory_window_size = 5
+
     def _register_routes(self):
         @self.app.get("/")
         def serve_homepage():
@@ -45,14 +49,46 @@ class InsightEngineServer:
 
         @self.app.post("/chat")
         def chat(request: ChatRequest):
-            response = self.llm.invoke([
+            conversation_id = request.conversation_id
+
+            if conversation_id is None:
+                conversation = self.db.create_next_conversation()
+                conversation_id = conversation["conversation_id"]
+
+            if conversation_id not in self.histories:
+                history = InMemoryChatMessageHistory()
+
+                recent_messages = self.db.get_recent_messages(
+                    conversation_id=conversation_id,
+                    limit=self.memory_window_size,
+                )
+
+                for message in recent_messages:
+                    if message["role"] == "user":
+                        history.add_user_message(message["content"])
+                    elif message["role"] == "assistant":
+                        history.add_ai_message(message["content"])
+
+                self.histories[conversation_id] = history
+
+            history = self.histories[conversation_id]
+
+            messages = [
                 SystemMessage(content=self.system_prompt),
-                HumanMessage(content=request.message),
-            ])
+                *history.messages[-self.memory_window_size:],
+            ]
+
+            history.add_user_message(request.message)
+            messages.append(history.messages[-1])
+
+            response = self.llm.invoke(messages)
+            reply = response.content
+
+            history.add_ai_message(reply)
 
             reply = response.content
 
-            conversation_id = self.db.save_chat_turn(
+            self.db.save_chat_turn(
                 conversation_id=request.conversation_id,
                 user_message=request.message,
                 assistant_message=reply,
