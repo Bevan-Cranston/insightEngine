@@ -113,6 +113,16 @@ class InsightEngineServer:
                 "conversation_title": next_conversation['conversation_title']
             }
 
+        @self.app.delete("/conversations")
+        def delete_all_conversations():
+            self.db.reset_db()
+            self.histories.clear()
+
+            return {
+                "success": True,
+                "message": "All conversations and messages deleted."
+            }
+
         @self.app.get("/conversations/{conversation_id}/messages")
         def get_conversation_messages(conversation_id: str):
             return self.db.get_messages_for_conversation(conversation_id)

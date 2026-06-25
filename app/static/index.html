@@ -11,6 +11,12 @@
     <button onclick="createNewConversation()">New Chat</button>
     <div id="conversation-list"></div>
 
+    <button
+        onclick="deleteAllConversations()"
+        style="margin-top: 15px;">
+        Delete All Conversations
+    </button>
+
     <h2>Current Chat</h2>
     <div id="current-chat">No chat selected</div>
 
@@ -116,6 +122,39 @@
                 messagesDiv.appendChild(messageBlock);
                 messagesDiv.appendChild(document.createElement("br"));
             });
+        }
+
+        async function deleteAllConversations() {
+            const confirmed = confirm(
+                "Delete all conversations and messages? This cannot be undone."
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            const responseDiv = document.getElementById("response");
+            responseDiv.innerText = "Deleting conversations...";
+
+            const response = await fetch("/conversations", {
+                method: "DELETE"
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || data.success === false) {
+                responseDiv.innerText = data.message || "Failed to delete conversations.";
+                return;
+            }
+
+            currentConversationId = null;
+
+            document.getElementById("current-chat").innerText = "No chat selected";
+            document.getElementById("messages").innerHTML = "";
+            document.getElementById("message").value = "";
+            responseDiv.innerText = data.message || "All conversations deleted.";
+
+            await loadConversations();
         }
 
     </script>

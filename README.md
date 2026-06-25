@@ -14,10 +14,10 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - [x] HTML interface
 - [x] MongoDB schema design
 - [x] MongoDB storage
+- [x] In chat memory
 
 ### V2 - Retrieval
 
-- [x] In chat memory
 - [ ] Tag extraction
 - [ ] Retrieval based on tags 
 - [ ] Retrieval on semantic similarity
