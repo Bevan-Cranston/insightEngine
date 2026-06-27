@@ -36,6 +36,9 @@ class InsightEngineDB:
         self.schemas = SchemaLoader()
 
     def reset_db(self):
+        archive_db = self.client["insight_engine_dev"]
+        archive_db.messages.insert_many(list(self.messages.find({})))
+        archive_db.conversations.insert_many(list(self.conversations.find({})))
         self.conversations.delete_many({})
         self.messages.delete_many({})
 
