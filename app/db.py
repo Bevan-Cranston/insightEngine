@@ -72,15 +72,19 @@ class InsightEngineDB:
         conversation_id,
         role,
         content,
-        model=None,
+        embedding,
+        model_name=None,
+        embedding_model_name=None,
         system_prompt_version=None,
     ):
         message = self.schemas.new_message()
         message["conversation_id"] = conversation_id
         message["role"] = role
         message["content"] = content
+        message["embedding"] = embedding
         message["created_at"] = utc_now()
-        message["model"] = model
+        message["model"] = model_name
+        message["embedding_model_name"] = embedding_model_name
         message["system_prompt_version"] = system_prompt_version
 
         self.messages.insert_one(message)
@@ -89,8 +93,11 @@ class InsightEngineDB:
         self,
         conversation_id,
         user_message,
+        user_embedding,
         assistant_message,
-        model,
+        assistant_embedding,
+        model_name,
+        embedding_model_name,
         system_prompt_version,
     ):
         if conversation_id is None:
@@ -100,13 +107,17 @@ class InsightEngineDB:
             conversation_id=conversation_id,
             role="user",
             content=user_message,
+            embedding=user_embedding,
+            embedding_model_name=embedding_model_name
         )
 
         self.create_message(
             conversation_id=conversation_id,
             role="assistant",
             content=assistant_message,
-            model=model,
+            embedding=assistant_embedding,
+            model_name=model_name,
+            embedding_model_name=embedding_model_name,
             system_prompt_version=system_prompt_version,
         )
 
@@ -132,6 +143,10 @@ class InsightEngineDB:
     def get_recent_messages(self, conversation_id, limit=20):
         messages = self.get_messages_for_conversation(conversation_id)
         return messages[-limit:]
+
+    def get_all_messages(self):
+        return [
+            msg for msg in self.messages.find({})]
 
     def _to_object_id(self, id_string):
         from bson import ObjectId
