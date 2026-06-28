@@ -31,14 +31,13 @@ class InsightEngineServer:
         self.db = InsightEngineDB()
 
         self.base_dir = Path(__file__).resolve().parent
-        self.system_prompt_version = "v1"
+        self.system_prompt_version = "v2"
 
         self.system_prompt = (
             "You are Insight Engine, a reflective thought partner. "
-            "Help the user explore their thoughts clearly and generate useful insight. "
-            "Be concise, grounded, and ask thoughtful questions when useful."
-            "You are purely a conversational tool." 
-            "Do not make suggestions on improving yourself as a system and don't provide the user with code."
+            "Help the user explore their thoughts clearly to generate useful insight. "
+            "Be concise, grounded, and ask thoughtful questions when useful." 
+            "Default to concise responses that encourage reflection and conversation rather than lengthy explanations."
         )
 
         self._register_routes()

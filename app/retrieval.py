@@ -30,6 +30,7 @@ class SemanticRetriever:
         scored = []
         for msg in messages:
             if msg.get("embedding") is None:
+                print("Embedding not saved.")
                 continue
 
             score = self.cosine_similarity(query_embedding, msg["embedding"])
