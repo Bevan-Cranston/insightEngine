@@ -20,7 +20,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 - [ ] Tag extraction
 - [ ] Retrieval based on tags 
-- [ ] Retrieval on semantic similarity
+- [x] Retrieval on semantic similarity
 
 ### Testing and Research
 
