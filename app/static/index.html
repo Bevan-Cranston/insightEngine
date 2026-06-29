@@ -2,7 +2,51 @@
 <html>
 <head>
     <title>Insight Engine</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-size: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.4;
+        }
+
+        .message-block,
+        #current-chat {
+            font-size: 1rem;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            max-width: 100%;
+        }
+
+        button {
+            font-size: 1rem;
+            margin-top: 10px;
+            padding: 10px 16px;
+        }
+
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        #status {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            min-height: 1.5rem;
+        }
+
+    </style>
 </head>
+
 <body onload="loadConversations()">
 
     <h1>Insight Engine</h1>
@@ -23,23 +67,22 @@
     <h2>Messages</h2>
     <div id="messages"></div>
 
-    <textarea id="message" rows="8" cols="50"
+    <textarea id="message" rows="8"
         placeholder="What are you reflecting on?"></textarea>
     <br>
 
     <button onclick="sendMessage()">Send</button>
 
-    <h2>Response</h2>
-    <div id="response"></div>
+    <div id="status"></div>
 
     <script>
         let currentConversationId = null;
 
         async function sendMessage() {
             const message = document.getElementById("message").value;
-            const responseDiv = document.getElementById("response");
+            const statusDiv = document.getElementById("status");
 
-            responseDiv.innerText = "Thinking...";
+            statusDiv.innerText = "Thinking...";
 
             const response = await fetch("/chat", {
                 method: "POST",
@@ -55,10 +98,12 @@
             const data = await response.json();
 
             currentConversationId = data.conversation_id;
-            responseDiv.innerText = data.reply;
 
             await loadConversations();
+            await loadMessages(currentConversationId);
+
             document.getElementById("message").value = "";
+            statusDiv.innerText = "";
         }
 
         async function createNewConversation() {
@@ -72,7 +117,6 @@
             await loadConversations();
             document.getElementById("current-chat").innerText =
                 data.conversation_title;
-            document.getElementById("response").innerText = "";
             document.getElementById("message").value = "";
         }
 
@@ -90,7 +134,6 @@
                 button.onclick = async () => {
                     currentConversationId = convo.id;
                     document.getElementById("current-chat").innerText = convo.title;
-                    document.getElementById("response").innerText = "";
                     document.getElementById("message").value = "";
 
                     await loadMessages(convo.id);
@@ -118,6 +161,7 @@
 
             messages.forEach(msg => {
                 const messageBlock = document.createElement("div");
+                messageBlock.className = "message-block";
                 messageBlock.innerText = `${msg.role}: ${msg.content}`;
                 messagesDiv.appendChild(messageBlock);
                 messagesDiv.appendChild(document.createElement("br"));
@@ -133,8 +177,8 @@
                 return;
             }
 
-            const responseDiv = document.getElementById("response");
-            responseDiv.innerText = "Deleting conversations...";
+            const statusDiv = document.getElementById("status");
+            statusDiv.innerText = "Deleting conversations...";
 
             const response = await fetch("/conversations", {
                 method: "DELETE"
