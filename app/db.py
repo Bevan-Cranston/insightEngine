@@ -33,12 +33,14 @@ class InsightEngineDB:
         self.db = self.client["insight_engine"]
         self.conversations = self.db["conversations"]
         self.messages = self.db["messages"]
+        self.archive_db = self.client["insight_engine_dev"]
+        self.archive_conversations = self.archive_db["conversations"]
+        self.archive_messages = self.archive_db["messages"]
         self.schemas = SchemaLoader()
 
     def reset_db(self):
-        archive_db = self.client["insight_engine_dev"]
-        archive_db.messages.insert_many(list(self.messages.find({})))
-        archive_db.conversations.insert_many(list(self.conversations.find({})))
+        self.archive_messages.insert_many(list(self.messages.find({})))
+        self.archive_conversations.insert_many(list(self.conversations.find({})))
         self.conversations.delete_many({})
         self.messages.delete_many({})
 
@@ -146,7 +148,9 @@ class InsightEngineDB:
 
     def get_all_messages(self):
         return [
-            msg for msg in self.messages.find({})]
+            *self.archive_conversations.find({}),
+            *self.archive_messages.find({})
+        ]
 
     def _to_object_id(self, id_string):
         from bson import ObjectId
