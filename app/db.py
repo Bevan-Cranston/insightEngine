@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 from copy import deepcopy
-import json
 from pathlib import Path
-
 from pymongo import MongoClient
+import json
+import os
 
 
 def utc_now():
@@ -29,7 +29,7 @@ class SchemaLoader:
 
 class InsightEngineDB:
     def __init__(self):
-        self.client = MongoClient("mongodb://localhost:27017")
+        self.client = MongoClient(os.getenv("MONGO_URI"))
         self.db = self.client["insight_engine"]
         self.conversations = self.db["conversations"]
         self.messages = self.db["messages"]
