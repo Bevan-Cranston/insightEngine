@@ -5,7 +5,7 @@ Accepted
 
 ## Context
 The first version of Insight Engine called the OpenAI API directly, however once LangChain was investigated it was 
-understood that it could provide an interface with the OpenAI LLM, as well as enabling future capabilities. 
+understood that it could orchestrate with the OpenAI LLM, as well as enabling future capabilities. 
 
 ## Decision
 Adopt LangChain as the project's primary LLM orchestration framework.
