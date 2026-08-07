@@ -21,4 +21,3 @@ using a custom tag extraction and matching system.
               ▼                 ▼
          OpenAI API         MongoDB
         (Reasoning)      (Persistence)
-

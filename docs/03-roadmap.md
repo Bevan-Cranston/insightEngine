@@ -17,10 +17,12 @@ Insight Engine currently provides:
 - Mobile browser-based interface (HTML, CSS and JS)
 - In-chat conversational memory
 - Semantic-based retrieval of similar messages from previous conversations
+- Containerized application layer with Docker 
 
 ## Selected Next Stage Tasks
 
-- Typescript Frontend
+- Typescript frontend
+- Resolve Github issues relating to conversation initialization and storage
 
 Note: These tasks are referenced from the following categories with a check beside denoting it is currently scheduled.
 Once the selected task is complete, move it up to Current State.
@@ -29,19 +31,30 @@ Once the selected task is complete, move it up to Current State.
 
 This area focuses on improving long-term memory, retrieval quality and interaction with large language models.
 
+- [ ] Develop keyword extraction architecture
+- [ ] Develop context governance for retrieval prompt injection
+- [ ] Develop Agentic framework around sequencing and retrieval
+
 ## Backend Engineering
+
+This area focuses on reliability engineering and supporting the addition of new product features 
+
+- [x] Resolve Github issues relating to conversation initialization and storage
+- [ ] Develop user separation functionality with login and authentication
 
 ## Frontend Engineering
 
 This area focuses on improving the user experience and providing a clean and intuitive interface for application features.
 
-- [x] Typescript Frontend 
+- [x] Typescript frontend  
 
 ## Data Engineering
 
 ## Deployment & Operations
 
 This area covers how Insight Engine is packaged, deployed, monitored and maintained across development and production environments.
+
+- [x] Containerize Mongo 
 
 ## Guiding Principles
 
