@@ -21,8 +21,10 @@ Insight Engine currently provides:
 
 ## Selected Next Stage Tasks
 
-- Typescript frontend
+- Containerize Mongo
 - Resolve Github issues relating to conversation initialization and storage
+- Typescript frontend
+- Improve chat interface and conversation navigation
 
 Note: These tasks are referenced from the following categories with a check beside denoting it is currently scheduled.
 Once the selected task is complete, move it up to Current State.
@@ -32,6 +34,7 @@ Once the selected task is complete, move it up to Current State.
 This area focuses on improving long-term memory, retrieval quality and interaction with large language models.
 
 - [ ] Develop keyword extraction architecture
+- [ ] Hybrid retrieval (semantic + keyword/tag-based)
 - [ ] Develop context governance for retrieval prompt injection
 - [ ] Develop Agentic framework around sequencing and retrieval
 
@@ -46,15 +49,24 @@ This area focuses on reliability engineering and supporting the addition of new 
 
 This area focuses on improving the user experience and providing a clean and intuitive interface for application features.
 
-- [x] Typescript frontend  
+- [x] Typescript frontend
+- [x] Improve chat interface and conversation navigation
 
 ## Data Engineering
+
+This area focuses on structuring data to support new features.
+
+- [ ] Design metadata schema for keyword search
+- [ ] Design metadata schema for user profiles
+- [ ] Ranking strategy for retrieved memories
 
 ## Deployment & Operations
 
 This area covers how Insight Engine is packaged, deployed, monitored and maintained across development and production environments.
 
 - [x] Containerize Mongo 
+- [ ] Centralized application logging and monitoring
+- [ ] Upload to AWS via ECR and test on EC2 with S3 volume
 
 ## Guiding Principles
 
