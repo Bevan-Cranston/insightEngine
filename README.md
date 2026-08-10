@@ -1,37 +1,49 @@
 # Insight Engine
 
-A conversational system for personalized insight extraction and development built on a FastAPI server using OpenAI API with MongoDB backend storage.
+Insight Engine is a conversational AI system designed to retain and intelligently reuse context across long periods of 
+interaction. Built with FastAPI, LangChain and MongoDB, the project explores hybrid retrieval, structured conversational 
+memory and agentic context governance to support increasingly personalised LLM interactions.
 
-Note: to start server, run the following command in root:
+
+Start the FastAPI development server from the project root:
+
+```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-## Project Roadmap
+## Documentation
 
-### V1 - MVP
+For further information, please see the growing engineering documentation set covering product direction,
+system architecture, deployment and key design decisions.
 
-- [x] FastAPI server
-- [x] OpenAI integration
-- [x] HTML interface
-- [x] MongoDB schema design
-- [x] MongoDB storage
-- [x] In chat memory
+- [Philosophy](docs/01-philosophy.md) — product vision and guiding philosophy
+- [Architecture](docs/02-architecture.md) — current architecture and planned three-layer LLM design
+- [Roadmap](docs/03-roadmap.md) — current state and future engineering work
+- [Deployment](docs/04-deployment.md) — current deployment experiments and planned cloud architecture
+- [Design Decisions](docs/design-decisions/) — architectural decision records (ADRs)
+- [Investigations](docs/investigations/) — planned experiments around memory structuring and context governance
 
-### V2 - Retrieval
+## Current State
 
-- [ ] Tag extraction
-- [ ] Retrieval based on tags 
-- [x] Retrieval on semantic similarity
+The current MVP+ includes:
 
-### Testing and Research
-
-- [ ] System message development
-- [ ] Tag structure development
-- [ ] Retrieval injection methodology
+- Mobile HTML/CSS/JavaScript interface
+- FastAPI application layer
+- OpenAI LLM integration through LangChain
+- MongoDB persistent conversation storage
+- In-chat conversational memory
+- Semantic retrieval across previous conversations
+- Dockerized application layer
 
 ```text
-Phone Browser
-      ↓
+Web Interface
+     │
+     ▼
    FastAPI
-   ↙     ↘
-OpenAI   MongoDB
+     │
+  Retrieval
+ ┌───┴────┐
+ ▼        ▼
+LLM    MongoDB
+       
 ```
