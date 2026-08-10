@@ -36,7 +36,6 @@ from langchain_openai import ChatOpenAI
 - Framework changes may introduce maintenance work
 
 ## Consequences
-
 - Future LLM functionality should be implemented through LangChain rather than direct OpenAI API calls.
 - Future retrieval and memory features can build on LangChain abstractions.
 - Changes to LangChain may occasionally require project updates when new versions are released.

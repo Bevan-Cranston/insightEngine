@@ -4,7 +4,7 @@ Insight Engine is designed to provide a conversational AI experience that retain
 multiple interactions. The system connects a mobile-accessible web interface to an LLM model for reasoning and database 
 for persistent message storage. Product value is being built around a system of retrieval for messages that relate to 
 the current message for prompt injection. This RAG system uses traditional embedding techniques to match based on 
-semantic similarity, but will be extended to a hybrid system using a custom tag extraction and matching system - see below for details.
+semantic similarity, but will be extended to a hybrid system using a custom tag extraction and matching system.
 
                     User
                       │
@@ -49,3 +49,38 @@ In summary, LLM use will be layered in three key ways:
 1. Reasoning — answers the present question with past context bundled.
 2. Memory structuring — classifies and preserves the past.
 3. Planning / Sequencing — decides how the past should influence the future.
+
+```text
+                         User
+                           │
+                           ▼
+              Mobile Web Interface
+                     (HTML/JS)
+                           │
+                           ▼
+                      FastAPI API
+                           │
+              ┌────────────┴────────────┐
+              │                         │
+              ▼                         ▼
+     Memory Structuring LLM    Planning / Sequencing LLM
+        (Classification)          (Context Governance)
+          ▲        │                       │
+          │        ▼                       ▼
+   User Profile  MongoDB             Retrieval Layer (RAG)
+                 (Memory)                  │
+                     │                     │
+                     └──────────┬──────────┘
+                                │
+                                ▼
+                       Curated Past Context
+                                │
+                                ▼
+                          Reasoning LLM
+                             (OpenAI)
+                                │
+                                ▼
+                          User Response
+```
+
+
