@@ -1,15 +1,16 @@
 # Environment variables
 .env
 .env.local
+!.env.example
 
 # Python
 __pycache__/
-.venv/
 *.pyc
+.venv/
 
-# Node / Vite
+# React / Node.js
 node_modules/
 dist/
 
-# IDE configuration
+# IDE
 .idea/
